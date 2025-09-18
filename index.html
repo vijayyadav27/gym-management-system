@@ -7,9 +7,9 @@
   <link rel="stylesheet" href="style.css">
 
   <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
   <header>
@@ -17,100 +17,28 @@
   </header>
 
   <main>
-    <!-- 🔑 Login -->
-    <section id="login">
-      <h2>Login</h2>
+    <!-- Login/Register Section -->
+    <section id="login-section">
+      <h2>Login / Register</h2>
       <input type="email" id="loginEmail" placeholder="Email">
       <input type="password" id="loginPassword" placeholder="Password">
-      <button onclick="login()">Login</button>
-      <button onclick="register()">Register</button>
+      <button id="loginBtn">Login</button>
+      <button id="registerBtn">Register</button>
       <p id="loginStatus"></p>
     </section>
 
-    <!-- 👑 Admin Panel -->
-    <section id="admin">
+    <!-- Admin Panel -->
+    <section id="admin-section" class="hidden">
       <h2>Admin Panel</h2>
-      <div>
+      <div class="card">
         <input type="text" id="memberName" placeholder="Member Name">
         <input type="email" id="memberEmail" placeholder="Member Email">
-        <button onclick="addMember()">Add Member</button>
+        <button id="addMemberBtn">Add Member</button>
       </div>
-      <div id="memberList"></div>
+      <div id="memberList" class="card"></div>
     </section>
   </main>
 
-  <!-- Firebase Config & App -->
-  <script>
-    // 🔹 Replace this config with YOUR Firebase project config from Firebase Console
-    const firebaseConfig = {
-      apiKey: "AIzaSyCGiZsbYfb-Oio2Frzaiokzy6WmfGfsXfU",
-      authDomain: "gym-management-system-39ab9.firebaseapp.com",
-      projectId: "gym-management-system-39ab9",
-      storageBucket: "gym-management-system-39ab9.firebasestorage.app",
-      messagingSenderId: "549267095595",
-      appId: "1:549267095595:web:2ea8fede182df43571aa6e"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // 🔑 Login
-    function login() {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-
-      auth.signInWithEmailAndPassword(email, password)
-        .then(user => {
-          document.getElementById("loginStatus").innerText = "✅ Logged in as " + user.user.email;
-        })
-        .catch(err => alert(err.message));
-    }
-
-    // 🆕 Register
-    function register() {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(user => {
-          document.getElementById("loginStatus").innerText = "✅ Registered as " + user.user.email;
-        })
-        .catch(err => alert(err.message));
-    }
-
-    // ➕ Add Member (Firestore)
-    function addMember() {
-      const name = document.getElementById("memberName").value;
-      const email = document.getElementById("memberEmail").value;
-
-      db.collection("members").add({
-        name: name,
-        email: email,
-        createdAt: new Date()
-      }).then(() => {
-        alert("✅ Member Added");
-        loadMembers();
-      });
-    }
-
-    // 📋 Load Members
-    function loadMembers() {
-      db.collection("members").get().then(snapshot => {
-        let output = "<h3>Members:</h3>";
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          output += <p>${data.name} (${data.email})</p>;
-        });
-        document.getElementById("memberList").innerHTML = output;
-      });
-    }
-
-    // Auto load members after login
-    auth.onAuthStateChanged(user => {
-      if (user) loadMembers();
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
